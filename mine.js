@@ -1,5 +1,5 @@
-var row = 16, col = 30;
-var mineCnt = 99;
+var row = 9, col = 9;
+var mineCnt = 3;
 var map = [];//has mine or not
 var disc = [];//is discovered
 var flg = [];//is set flag or not

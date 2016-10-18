@@ -52,7 +52,7 @@ td:active
 
 .blktd
 {
-	background: #F8F8F8;
+	background: radial-gradient(#F8F8F8 60%, #EAEAEA 90%)
 }
 
 .flgtd
