@@ -4,6 +4,6 @@
 "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 
 <svg width="40" height="40" version="1.1" xmlns="http://www.w3.org/2000/svg">
-<text x="13" y="30" fill="#e02f74" style="font-size: 30px;">3</text>
+<text x="12" y="30" fill="#e02f74" style="font-size: 30px; font-family: Arial; font-weight:bold;">3</text>
 <rect x="2" y="2" rx="10" ry="10" width="36" height="36" style="fill:#C0C0C0;stroke:black;stroke-width:2;opacity:0.5"/>
 </svg>

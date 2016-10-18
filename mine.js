@@ -1,5 +1,5 @@
-var row = 9, col = 9;
-var mineCnt = 3;
+var row = 16, col = 30;
+var mineCnt = 99;
 var map = [];//has mine or not
 var disc = [];//is discovered
 var flg = [];//is set flag or not
@@ -96,7 +96,9 @@ function initGraph()
 		{
 			var tdata = document.createElement("td");
 			tdata.id = i.toString() + " " + j,toString();
-			tdata.setAttribute("class", "untd");
+			var image = document.createElement("img");
+			image.src = "un.svg";
+			tdata.appendChild(image);
 			tdata.addEventListener("contextmenu", function(ev){rightClick(this); return false;}, false);
 			tdata.addEventListener("click", function(ev){leftClick(this); return false;}, false);
 			trow.appendChild(tdata);
@@ -113,23 +115,16 @@ function updateGraph()
 			var td = document.getElementById(i.toString() + " " + j.toString());
 			if (disc[i][j] === true)
 			{
-				if (num[i][j] === 0)//blank block
-				{
-					td.setAttribute("class", "blktd"); 
-				}
-				else//number block
-				{
-					td.setAttribute("class", "numtd");
-					td.innerHTML = num[i][j].toString();
-				}
+				var name = num[i][j].toString() + ".svg";
+				td.childNodes[0].setAttribute("src", name); 
 			}
 			else if(flg[i][j] === true)
 			{
-				td.setAttribute("class", "flgtd");
+				td.childNodes[0].setAttribute("src", "flag.svg");
 			}
 			else
 			{
-				td.setAttribute("class", "untd");
+				td.childNodes[0].setAttribute("src", "un.svg");
 			}
 		}
 	}
