@@ -346,7 +346,7 @@ function leftClick(block)//false die
 {
 	var id = block.id.split(" ");
 	var r = parseInt(id[0]), c = parseInt(id[1]);
-	var res;
+	var res = true;//for invalid click
 	
 	if (hasMine === false)
 	{
