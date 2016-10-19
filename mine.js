@@ -87,6 +87,7 @@ function setMine(r, c)
 
 function initGraph()
 {
+	//set universal attributes
 	document.body.setAttribute("oncontextmenu", "return false;");
 	document.body.setAttribute("ondragstart", "return false;");
 	document.body.setAttribute("ondrop", "return false;");
@@ -106,8 +107,8 @@ function initGraph()
 			var image = document.createElement("img");
 			image.src = "un.svg";
 			tdata.appendChild(image);
-			tdata.addEventListener("mousedown", function(ev){dealMouseDown(this, ev); return false;}, false);
-			tdata.addEventListener("mouseup", function(ev){dealMouseUp(this, ev); return false;}, false);
+			tdata.addEventListener("mousedown", mouseDownEvent, false);
+			tdata.addEventListener("mouseup", mouseUpEvent, false);
 			trow.appendChild(tdata);
 		}
 	}
@@ -132,6 +133,35 @@ function updateGraph()
 			else
 			{
 				td.childNodes[0].setAttribute("src", "un.svg");
+			}
+		}
+	}
+}
+
+//lastShow
+function lastShow()
+{
+	for (var i = 0; i < row; i++)
+	{
+		for (var j = 0; j < col; j++)
+		{
+			var td = document.getElementById(i.toString() + " " + j.toString());
+			if (map[i][j] === true && flg[i][j] === false)
+			{
+				td.childNodes[0].setAttribute("src", "mine.svg");
+			}
+			else if (map[i][j] === true && flg[i][j] === true)
+			{
+				td.childNodes[0].setAttribute("src", "flag.svg");
+			}
+			else if (map[i][j] === false && flg[i][j] === true)
+			{
+				td.childNodes[0].setAttribute("src", "wrong flag.svg");
+			}
+			else//the number or vacant block
+			{
+				var name = num[i][j].toString() + ".svg";
+				td.childNodes[0].setAttribute("src", name); 
 			}
 		}
 	}
@@ -225,6 +255,34 @@ function chord(r, c)
 	}
 }
 
+function judgeWin()
+{
+	var res = true;
+	for (var i = 0; i < row; i++)
+	{
+		for (var j = 0; j < col; j++)
+		{
+			if (map[i][j] === false && disc[i][j] === false)
+			{
+				res = false;
+			}
+		}
+	}
+	return res;
+}
+
+function mouseDownEvent(evt)
+{
+	dealMouseDown(this, evt); 
+	return false;
+}
+
+function mouseUpEvent(evt)
+{
+	dealMouseUp(this, evt); 
+	return false;
+}
+
 function dealMouseDown(block, ev)
 {
 	var id = block.id.split(" ");
@@ -255,13 +313,14 @@ function dealMouseUp(block, en)
 {
 	var id = block.id.split(" ");
 	var msUpRow = parseInt(id[0]), msUpCol = parseInt(id[1]);
+	var isDead;
 
 	//if the mouse does not move to another block
 	if (msUpRow === msDownRow && msUpCol === msDownCol)
 	{
 		if (event.which === 1)
 		{
-			leftClick(block);
+			isDead = !leftClick(block);
 		}
 		else if (event.which === 3)
 		{
@@ -269,9 +328,21 @@ function dealMouseUp(block, en)
 		}	
 	}
 	updateGraph();
+
+	if (isDead === true)
+	{
+		lastShow();
+		endGame();
+	}
+	
+	if (judgeWin() === true)
+	{
+		alert("You Win!!!");
+		endGame();
+	}
 }
 
-function leftClick(block)
+function leftClick(block)//false die
 {
 	var id = block.id.split(" ");
 	var r = parseInt(id[0]), c = parseInt(id[1]);
@@ -291,11 +362,7 @@ function leftClick(block)
 	{
 		res = chord(r, c);
 	}
-	if (res === false)//died
-	{
-		alert("DIE");
-		//something then
-	}
+	return res;
 }
 
 function rightClick(block)
@@ -306,6 +373,19 @@ function rightClick(block)
 	if (disc[r][c] === false)
 	{
 		flg[r][c] = !flg[r][c];
+	}
+}
+
+function endGame()
+{
+	for (var i = 0; i < row; i++)
+	{
+		for (var j = 0; j < col; j++)
+		{
+			var tdata = document.getElementById(i.toString() + " " + j.toString());
+			tdata.removeEventListener("mousedown", mouseDownEvent, false);
+			tdata.removeEventListener("mouseup", mouseUpEvent, false);
+		}
 	}
 }
 
