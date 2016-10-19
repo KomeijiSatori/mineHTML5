@@ -230,8 +230,25 @@ function dealMouseDown(block, ev)
 	var id = block.id.split(" ");
 	msDownRow = parseInt(id[0]);
 	msDownCol = parseInt(id[1]);
-	
-	//maybe add turn black option
+
+	//if it is number state
+	var r = msDownRow, c = msDownCol;
+	if (num[r][c] >= 1 && disc[r][c] === true)//if it is the number block
+	{
+		for (var m = -1; m <= 1; m++)
+		{
+			for (var n = -1; n <= 1; n++)
+			{
+				if (r + m >= 0 && r + m <= row - 1 && c + n >= 0 && c + n <= col - 1 && !(m === 0 && n === 0))
+				{
+					if (disc[r + m][c + n] === false && flg[r + m][c + n] === false)
+					{
+						document.getElementById((r + m).toString() + " " + (c + n).toString()).childNodes[0].setAttribute("src", "dark.svg");
+					}
+				}
+			}
+		}
+	}
 }
 
 function dealMouseUp(block, en)
@@ -239,23 +256,19 @@ function dealMouseUp(block, en)
 	var id = block.id.split(" ");
 	var msUpRow = parseInt(id[0]), msUpCol = parseInt(id[1]);
 
-	//if the mouse moves to another block
-	if (!(msUpRow === msDownRow && msUpCol === msDownCol))
+	//if the mouse does not move to another block
+	if (msUpRow === msDownRow && msUpCol === msDownCol)
 	{
-		return;
+		if (event.which === 1)
+		{
+			leftClick(block);
+		}
+		else if (event.which === 3)
+		{
+			rightClick(block);
+		}	
 	}
-
-	//first may turn back the stated block's color(to be continued)
-
-
-	if (event.which == 1)
-	{
-		leftClick(block);
-	}
-	else if (event.which == 3)
-	{
-		rightClick(block);
-	}
+	updateGraph();
 }
 
 function leftClick(block)
@@ -283,7 +296,6 @@ function leftClick(block)
 		alert("DIE");
 		//something then
 	}
-	updateGraph();
 }
 
 function rightClick(block)
@@ -295,7 +307,6 @@ function rightClick(block)
 	{
 		flg[r][c] = !flg[r][c];
 	}
-	updateGraph();
 }
 
 initVar();
