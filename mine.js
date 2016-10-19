@@ -6,6 +6,10 @@ var flg = [];//is set flag or not
 var num = [];//mine nearby
 var hasMine = false;
 
+//record where the mouse is down
+var msDownRow;
+var msDownCol;
+
 function random(min, max)
 {
 	return Math.floor(Math.random() * (max - min + 1) ) + min;
@@ -84,6 +88,9 @@ function setMine(r, c)
 function initGraph()
 {
 	document.body.setAttribute("oncontextmenu", "return false;");
+	document.body.setAttribute("ondragstart", "return false;");
+	document.body.setAttribute("ondrop", "return false;");
+
 	var table = document.createElement("table");
 	table.id = "tb";
 	document.body.appendChild(table);
@@ -99,8 +106,8 @@ function initGraph()
 			var image = document.createElement("img");
 			image.src = "un.svg";
 			tdata.appendChild(image);
-			tdata.addEventListener("contextmenu", function(ev){rightClick(this); return false;}, false);
-			tdata.addEventListener("click", function(ev){leftClick(this); return false;}, false);
+			tdata.addEventListener("mousedown", function(ev){dealMouseDown(this, ev); return false;}, false);
+			tdata.addEventListener("mouseup", function(ev){dealMouseUp(this, ev); return false;}, false);
 			trow.appendChild(tdata);
 		}
 	}
@@ -215,6 +222,39 @@ function chord(r, c)
 	else//cannot chord
 	{
 		return true;
+	}
+}
+
+function dealMouseDown(block, ev)
+{
+	var id = block.id.split(" ");
+	msDownRow = parseInt(id[0]);
+	msDownCol = parseInt(id[1]);
+	
+	//maybe add turn black option
+}
+
+function dealMouseUp(block, en)
+{
+	var id = block.id.split(" ");
+	var msUpRow = parseInt(id[0]), msUpCol = parseInt(id[1]);
+
+	//if the mouse moves to another block
+	if (!(msUpRow === msDownRow && msUpCol === msDownCol))
+	{
+		return;
+	}
+
+	//first may turn back the stated block's color(to be continued)
+
+
+	if (event.which == 1)
+	{
+		leftClick(block);
+	}
+	else if (event.which == 3)
+	{
+		rightClick(block);
 	}
 }
 

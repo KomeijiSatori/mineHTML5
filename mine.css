@@ -16,6 +16,11 @@ td
     height: 40px; 
     margin: 0px;
     display: inline-block;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select:none;
+	user-select:none;
+	-o-user-select:none;
 }
 
 td:hover
