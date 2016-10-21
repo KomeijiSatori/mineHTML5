@@ -1,0 +1,4 @@
+0. fix die when click known block
+1. fix state bug when mouseup at the blank area
+2. add left mine
+3. add timer

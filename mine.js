@@ -10,6 +10,10 @@ var hasMine = false;
 var msDownRow;
 var msDownCol;
 
+//timer
+var timer = -1;
+var startTime;
+
 function random(min, max)
 {
 	return Math.floor(Math.random() * (max - min + 1) ) + min;
@@ -92,6 +96,39 @@ function initGraph()
 	document.body.setAttribute("ondragstart", "return false;");
 	document.body.setAttribute("ondrop", "return false;");
 
+	//first add left mines
+	var imgSpan = document.createElement("span");
+	var mineIcon = document.createElement("img");
+	mineIcon.className = "mineIcon";
+	var mineSpan = document.createElement("span");
+	mineIcon.src = "mines.svg";
+	mineSpan.innerHTML = mineCnt.toString();
+	mineSpan.id = "mineCnt";
+	imgSpan.appendChild(mineIcon);
+
+	//then the clock
+	var clkSpan = document.createElement("span");
+	var clkIcon = document.createElement("img");
+	clkIcon.className = "clkIcon";
+	var timeSpan = document.createElement("span");
+	clkIcon.src = "clock.svg";
+	timeSpan.innerHTML = "0";
+	timeSpan.id = "time";
+	clkSpan.appendChild(clkIcon);
+
+	var clear = document.createElement("div");
+	clear.className = "clear";
+	document.body.appendChild(imgSpan);
+	document.body.appendChild(mineSpan);
+	document.body.appendChild(clkSpan);
+	document.body.appendChild(timeSpan);
+	document.body.appendChild(clear);
+	
+	//deal with mouseup outer number block
+	document.body.addEventListener("mouseup", updateGraph, false);
+	
+	//then add the main table
+	
 	var table = document.createElement("table");
 	table.id = "tb";
 	document.body.appendChild(table);
@@ -116,6 +153,22 @@ function initGraph()
 
 function updateGraph()
 {
+	//update mineleft
+	var cnt = 0;
+	for (var i = 0; i < row; i++)
+	{
+		for (var j = 0; j < col; j++)
+		{
+			if (flg[i][j] === true)
+			{
+				cnt++;
+			}
+		}
+	}
+	var mineLeft = mineCnt - cnt;
+	document.getElementById("mineCnt").innerHTML = mineLeft.toString();
+
+	//update table
 	for (var i = 0; i < row; i++)
 	{
 		for (var j = 0; j < col; j++)
@@ -283,6 +336,13 @@ function mouseUpEvent(evt)
 	return false;
 }
 
+function updateTimer()
+{
+	var t = Date.parse(new Date()) - Date.parse(startTime);
+	var seconds = Math.floor(t / 1000);
+	document.getElementById("time").innerHTML = seconds.toString();
+}
+
 function dealMouseDown(block, ev)
 {
 	var id = block.id.split(" ");
@@ -309,7 +369,7 @@ function dealMouseDown(block, ev)
 	}
 }
 
-function dealMouseUp(block, en)
+function dealMouseUp(block, ev)
 {
 	var id = block.id.split(" ");
 	var msUpRow = parseInt(id[0]), msUpCol = parseInt(id[1]);
@@ -318,11 +378,19 @@ function dealMouseUp(block, en)
 	//if the mouse does not move to another block
 	if (msUpRow === msDownRow && msUpCol === msDownCol)
 	{
-		if (event.which === 1)
+		//start timer
+		if (timer === -1)
+		{
+			timer = setInterval(updateTimer ,1000);
+			startTime = new Date();
+		}
+
+		//judge left or right click
+		if (ev.which === 1)
 		{
 			isDead = !leftClick(block);
 		}
-		else if (event.which === 3)
+		else if (ev.which === 3)
 		{
 			rightClick(block);
 		}	
@@ -378,6 +446,8 @@ function rightClick(block)
 
 function endGame()
 {
+	document.body.removeEventListener("mouseup", updateGraph, false);
+	clearInterval(timer);
 	for (var i = 0; i < row; i++)
 	{
 		for (var j = 0; j < col; j++)

@@ -4,6 +4,16 @@ body
 	padding: 0;
 }
 
+span
+{
+	height: 40px;
+	height: 40px;
+	text-shadow: 0px 0px 2px darkblue;
+	font-size: 36px;
+	font-weight: bold;
+	float: left;
+}
+
 tr
 {
 	overflow:scroll;
@@ -35,6 +45,21 @@ img:active
 	border-radius: 11px;
 }
 
+.clear
+{
+	clear: both;
+}
+
+.mineIcon
+{
+	margin-right: 5px;
+}
+
+.clkIcon
+{
+	margin-left: 100px;
+	margin-right: 10px;
+}
 
 .numtd
 {
