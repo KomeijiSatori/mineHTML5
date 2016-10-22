@@ -1,4 +1,5 @@
-var row = 16, col = 30;
+var row = 16, col = 32;
+var maxRow = 32, maxCol = 60;
 var mineCnt = 99;
 var map = [];//has mine or not
 var disc = [];//is discovered
@@ -12,11 +13,11 @@ var msDownCol;
 
 //timer
 var timer = -1;
-var startTime;
+var time = 0;
 
 function random(min, max)
 {
-	return Math.floor(Math.random() * (max - min + 1) ) + min;
+	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 //set all block empty and all undiscovered
@@ -104,6 +105,8 @@ function initGraph()
 	mineIcon.src = "mines.svg";
 	mineSpan.innerHTML = mineCnt.toString();
 	mineSpan.id = "mineCnt";
+	imgSpan.id = "imgSpan";
+	imgSpan.addEventListener("click", showMines, false);
 	imgSpan.appendChild(mineIcon);
 
 	//then the clock
@@ -114,6 +117,8 @@ function initGraph()
 	clkIcon.src = "clock.svg";
 	timeSpan.innerHTML = "0";
 	timeSpan.id = "time";
+	clkSpan.id = "clkSpan";
+	clkSpan.addEventListener("click", alterTimer, false);
 	clkSpan.appendChild(clkIcon);
 
 	var clear = document.createElement("div");
@@ -191,8 +196,24 @@ function updateGraph()
 	}
 }
 
-//lastShow
-function lastShow()
+//show win
+function showWin()
+{
+	for (var i = 0; i < row; i++)
+	{
+		for (var j = 0; j < col; j++)
+		{
+			if (map[i][j] === true)
+			{
+				var td = document.getElementById(i.toString() + " " + j.toString());
+				td.childNodes[0].setAttribute("src", "smile.svg");
+			}
+		}
+	}
+}
+
+//showDie
+function showDie()
 {
 	for (var i = 0; i < row; i++)
 	{
@@ -338,9 +359,8 @@ function mouseUpEvent(evt)
 
 function updateTimer()
 {
-	var t = Date.parse(new Date()) - Date.parse(startTime);
-	var seconds = Math.floor(t / 1000);
-	document.getElementById("time").innerHTML = seconds.toString();
+	time++;
+	document.getElementById("time").innerHTML = time.toString();
 }
 
 function dealMouseDown(block, ev)
@@ -399,13 +419,13 @@ function dealMouseUp(block, ev)
 
 	if (isDead === true)
 	{
-		lastShow();
+		showDie();
 		endGame();
 	}
 	
 	if (judgeWin() === true)
 	{
-		alert("You Win!!!");
+		showWin();
 		endGame();
 	}
 }
@@ -447,7 +467,12 @@ function rightClick(block)
 function endGame()
 {
 	document.body.removeEventListener("mouseup", updateGraph, false);
-	clearInterval(timer);
+	document.getElementById("imgSpan").removeEventListener("click", showMines, false);
+	document.getElementById("clkSpan").removeEventListener("click", alterTimer, false);
+	if (timer >= 0)
+	{
+		clearInterval(timer);
+	}
 	for (var i = 0; i < row; i++)
 	{
 		for (var j = 0; j < col; j++)
@@ -459,5 +484,54 @@ function endGame()
 	}
 }
 
-initVar();
-initGraph();
+function showMines()
+{
+	for (var i = 0; i < row; i++)
+	{
+		for (var j = 0; j < col; j++)
+		{
+			if (map[i][j] === true)
+			{
+				var tdata = document.getElementById(i.toString() + " " + j.toString());
+				tdata.childNodes[0].setAttribute("src", "mine.svg");
+			}
+		}
+	}
+}
+
+function alterTimer()
+{
+	if (timer === -1 || timer === -2)
+	{
+		timer = setInterval(updateTimer ,1000);
+	}
+	else
+	{
+		clearInterval(timer);
+		timer = -2;
+	}
+}
+
+function play(r, c, mines)
+{
+	row = r;
+	col = c;
+	mineCnt = mines;
+	initVar();
+	initGraph();
+}
+
+function start()
+{
+	document.getElementById("setDiv").style = "display:none";
+	var r = document.getElementById("height").value;
+	var c = document.getElementById("width").value;
+	var count = document.getElementById("count").value;
+	r = (r < 4) ? 4 : r;
+	c = (c < 4) ? 4 : c;
+	r = (r > maxRow) ? maxRow : r;
+	c = (c > maxCol) ? maxCol : c;
+	count = (count < 1) ? 1 : count;
+	count = (count > r * c - 9) ? r * c - 9 : count;
+	play(r, c, count);
+}
