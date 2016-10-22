@@ -1,3 +1,2 @@
-0. add win scene
-1. add setting of height, width and mine count
-2. add cheat of showing mines and stopping clock
+0. fix bug for not hiding setting menu in firefox and edge
+1. optimize graph update method makes it work much quicker

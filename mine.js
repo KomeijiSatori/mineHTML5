@@ -1,5 +1,5 @@
 var row = 16, col = 32;
-var maxRow = 32, maxCol = 60;
+var maxRow = 64, maxCol = 120;
 var mineCnt = 99;
 var map = [];//has mine or not
 var disc = [];//is discovered
@@ -182,15 +182,25 @@ function updateGraph()
 			if (disc[i][j] === true)
 			{
 				var name = num[i][j].toString() + ".svg";
-				td.childNodes[0].setAttribute("src", name); 
+				if (td.childNodes[0].getAttribute("src") !== name)
+				{				
+					td.childNodes[0].setAttribute("src", name);
+				}
 			}
 			else if(flg[i][j] === true)
 			{
-				td.childNodes[0].setAttribute("src", "flag.svg");
+				if (td.childNodes[0].getAttribute("src") !== "flag.svg")
+				{				
+					td.childNodes[0].setAttribute("src", "flag.svg");
+				}
+				 
 			}
 			else
 			{
-				td.childNodes[0].setAttribute("src", "un.svg");
+				if (td.childNodes[0].getAttribute("src") !== "un.svg")
+				{				
+					td.childNodes[0].setAttribute("src", "un.svg");
+				}
 			}
 		}
 	}
@@ -523,7 +533,7 @@ function play(r, c, mines)
 
 function start()
 {
-	document.getElementById("setDiv").style = "display:none";
+	document.getElementById("setDiv").style.display = "none";
 	var r = document.getElementById("height").value;
 	var c = document.getElementById("width").value;
 	var count = document.getElementById("count").value;
